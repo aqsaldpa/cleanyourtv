@@ -148,6 +148,8 @@ final class Config {
     final boolean showHomeSettingsShortcut;
     /** One line under the clock: CPU, free memory, free storage. Off unless config or a theme turns it on. */
     final boolean showStats;
+    /** config.json prayer_times: the place to compute for, or null when the line is off. */
+    PrayerTimes prayer;
     /** game_day: the package of an add-on that publishes each team's next game (GameDay); empty = off. */
     final String gameDay;
     /** App library pill after the last Home row (config.xml app_library). */
@@ -686,7 +688,7 @@ final class Config {
         Festival festival = json == null ? Festival.NONE : Festival.parse(festivalName(json),
                 string(json, "festival_until", ""), string(json, "greeting", ""), string(json, "accent_color", ""));
 
-        return new Config(dock, fillDock, hidden, libraryApps, libraryExcludedApps, liveTv, liveTvAction, liveTvInputId, packageMap(launchActions), packageMap(appLabels),
+        Config config = new Config(dock, fillDock, hidden, libraryApps, libraryExcludedApps, liveTv, liveTvAction, liveTvInputId, packageMap(launchActions), packageMap(appLabels),
                 packageMap(appBanners), panelService, panelAction, panelExtra, coocaaSources, inputAction, inputSources, inputUriScheme, Math.max(1, columns),
                 Math.max(0, rowsBelow), animations, advancedEffects, shamsi, greetingName, moduleCards, reducedMotion, bootToLiveTv,
                 openOnStartChoice, dockTitle, dockRow, topMenu, launcherSettingsButton, reorderButton, showNetworkPill, showInputsPill,
@@ -701,6 +703,19 @@ final class Config {
                 Math.max(0, Math.min(90, clockWallpaperDim)), clockGlow, glassStyle, singleRow && dockRow, dockBandAll, lunar, lunarOffset,
                 dateBelowClock, vpnPill, locale, powerOnHomeAlways, inputsConnectedOnly,
                 Math.max(0, Math.min(600, openOnStartNetworkWait)), iconOnlyVpn, clockFormat, backOpensClock);
+        config.prayer = prayerTimes(json);
+        return config;
+    }
+
+    /** config.json prayer_times with prayer_lat and prayer_lon; null when off or the place is missing. */
+    private static PrayerTimes prayerTimes(JSONObject json) {
+        if (json == null || !json.optBoolean("prayer_times", false)) return null;
+        if (!json.has("prayer_lat") || !json.has("prayer_lon")) return null;
+        double lat = json.optDouble("prayer_lat", Double.NaN);
+        double lon = json.optDouble("prayer_lon", Double.NaN);
+        if (Double.isNaN(lat) || Double.isNaN(lon) || Math.abs(lat) > 66 || Math.abs(lon) > 180) return null;
+        return new PrayerTimes(lat, lon, json.optDouble("prayer_fajr_angle", 20), json.optDouble("prayer_isha_angle", 18),
+                json.optInt("prayer_ihtiyat_minutes", 2), json.optBoolean("prayer_hijri", true));
     }
 
     /**
