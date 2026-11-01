@@ -24,5 +24,7 @@
   "prayer_hijri": true,
   "wallpaper_true_color": true,
   "ambient_glow": false,
-  "sky_intensity": 0
+  "sky_intensity": 0,
+  "close_background_apps": true,
+  "close_background_keep": []
 }

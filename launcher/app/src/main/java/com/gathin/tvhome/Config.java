@@ -150,6 +150,8 @@ final class Config {
     final boolean showStats;
     /** config.json prayer_times: the place to compute for, or null when the line is off. */
     PrayerTimes prayer;
+    /** config.json close_background_apps: apps never closed when Home returns, or null when the feature is off. */
+    java.util.Set<String> closeBackgroundKeep;
     /** game_day: the package of an add-on that publishes each team's next game (GameDay); empty = off. */
     final String gameDay;
     /** App library pill after the last Home row (config.xml app_library). */
@@ -704,6 +706,9 @@ final class Config {
                 dateBelowClock, vpnPill, locale, powerOnHomeAlways, inputsConnectedOnly,
                 Math.max(0, Math.min(600, openOnStartNetworkWait)), iconOnlyVpn, clockFormat, backOpensClock);
         config.prayer = prayerTimes(json);
+        if (json != null && json.optBoolean("close_background_apps", false)) {
+            config.closeBackgroundKeep = new java.util.HashSet<>(stringList(json, "close_background_keep", new ArrayList<>()));
+        }
         return config;
     }
 

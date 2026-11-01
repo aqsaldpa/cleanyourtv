@@ -196,6 +196,11 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
     private TextView stats;
     private TextView prayerLine;
     private PrayerTimes prayer;
+    private BackgroundCleaner cleaner;
+    private final Runnable closeBackground = () -> {
+        BackgroundCleaner c = cleaner;
+        if (c != null) new Thread(c::run, "cleaner").start();
+    };
     private List<RaceWeekend.Race> raceCalendar;
     private View racePanel;
     private TextView raceKicker, raceHeadline, raceSessions;
@@ -562,6 +567,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         rotationStart = SystemClock.elapsedRealtime();
         showStats = cfg.showStats;
         prayer = cfg.prayer;
+        cleaner = cfg.closeBackgroundKeep != null ? new BackgroundCleaner(this, cfg.closeBackgroundKeep) : null;
         prayerLine.setVisibility(prayer != null ? View.VISIBLE : View.GONE);
         inputsConnectedOnly = cfg.inputsConnectedOnly;
         shamsi = cfg.shamsiDate;
@@ -1100,6 +1106,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         }
         if (showStats) startStats();
         updatePrayerLine();
+        if (cleaner != null) handler.postDelayed(closeBackground, 2000);
         if (gameDay != null) gameDay.start();
         sky.update();
         wallpaperPlayer.start();
@@ -1285,6 +1292,7 @@ public class MainActivity extends Activity implements AppAdapter.TileListener {
         handler.removeCallbacks(openWhenOnline);
         startPending = null;   // leaving Home before the network came back: the boot's app stays closed
         stopStats();
+        handler.removeCallbacks(closeBackground);
         if (gameDay != null) gameDay.stop();
         handler.removeCallbacks(turnTick);
         if (lamp != null) lamp.stop();
