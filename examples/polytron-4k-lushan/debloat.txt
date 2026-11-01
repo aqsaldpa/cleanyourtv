@@ -1,0 +1,31 @@
+# Polytron 4K Google TV (POLYTRON4K, device lushan, MediaTek merak), Android TV 12, build STT2.230929.001.10901.
+# 1.8 GB RAM, 3840x2160 panel, 1920x1080 UI, Google TV launcher (com.google.android.apps.tv.launcherx).
+#
+# Apply:   TV_HOST=<tv ip> tools/disable.sh examples/polytron-4k-lushan/debloat.txt
+# Undo:    TV_HOST=<tv ip> tools/restore.sh examples/polytron-4k-lushan/debloat.txt
+# Kept: Live TV and tuner (com.vt.tv.tvcenter, com.vt.source.*), USB media, OTA, Dolby, Play Store, Google Play services.
+
+# Ads, silent installs, store mode
+android.autoinstalls.config.google.gtvpai    # silently installs promoted apps
+com.vt.storemode                             # store demo mode
+
+# Telemetry
+com.google.android.feedback
+com.google.android.partnersetup              # partner referral tracking
+
+# Unused system services
+com.android.printspooler
+com.android.providers.calendar
+com.google.android.syncadapters.calendar
+com.google.android.play.games
+
+# Memory: ambient screensaver, about 70 MB resident across two processes
+com.google.android.apps.tv.dreamx
+
+# Off by choice on the tested set (keep what you use)
+com.google.android.katniss                   # voice search / Assistant, about 78 MB resident
+com.vt.alexa                                 # Alexa voice
+com.tencent.qqlivei18n                       # WeTV
+
+# Second Home claimant on Google TV. disable.sh checks first that it does not own the saved Wi-Fi network.
+com.google.android.tungsten.setupwraith
