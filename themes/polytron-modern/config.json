@@ -1,0 +1,25 @@
+{
+  "dock_apps": [
+    "com.google.android.youtube.tv",
+    "com.netflix.ninja",
+    "com.vidio.android.tv",
+    "id.visionplus.android.atv",
+    "com.amazon.amazonvideo.livingroom",
+    "com.spotify.tv.android"
+  ],
+  "background_color": "#090C14",
+  "wallpaper": true,
+  "wallpaper_dim": 10,
+  "cinematic_home": true,
+  "dock_glass": true,
+  "icon_only_buttons": true,
+  "app_glow": true,
+  "glow_style": "horizon",
+  "focus_overshoot": false,
+  "advanced_effects": false,
+  "greeting_name": "",
+  "prayer_times": true,
+  "prayer_lat": -7.4302,
+  "prayer_lon": 111.0219,
+  "prayer_hijri": true
+}
